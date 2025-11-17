@@ -15,11 +15,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // Seed in proper order (respecting foreign key dependencies)
+        $this->call([
+            CategorySeeder::class,
+            SettingSeeder::class,
+            UserSeeder::class,
+            ProjectSeeder::class,
         ]);
+
+        $this->command->info('✅ Database seeded successfully!');
+        $this->command->info('📧 Admin login: admin@alshulail-donate.org');
+        $this->command->info('🔑 Password: password');
     }
 }
