@@ -39,7 +39,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/projects/{project}/toggle-featured', [ProjectController::class, 'toggleFeatured'])->name('admin.projects.toggle-featured');
     Route::post('/projects/{project}/toggle-urgent', [ProjectController::class, 'toggleUrgent'])->name('admin.projects.toggle-urgent');
     Route::post('/projects/{project}/upload-images', [ProjectController::class, 'uploadImages'])->name('admin.projects.upload-images');
-    Route::delete('/projects/{project}/images/{media}', [ProjectController::class, 'deleteImage'])->name('admin.projects.delete-image');
+    Route::delete('/projects/{project}/media/{media}', [ProjectController::class, 'deleteMedia'])->name('admin.projects.delete-media');
+    Route::post('/projects/{project}/restore', [ProjectController::class, 'restore'])->name('admin.projects.restore')->withTrashed();
+    Route::delete('/projects/{project}/force-delete', [ProjectController::class, 'forceDelete'])->name('admin.projects.force-delete')->withTrashed();
     
     // Categories Management
     Route::resource('categories', CategoryController::class)->names('admin.categories');
@@ -54,9 +56,14 @@ Route::middleware(['auth', 'admin'])->group(function () {
     
     // Users Management
     Route::resource('users', UserController::class)->names('admin.users');
+    Route::get('/users/{user}/change-password', [UserController::class, 'changePassword'])->name('admin.users.change-password');
+    Route::post('/users/{user}/update-password', [UserController::class, 'updatePassword'])->name('admin.users.update-password');
     Route::post('/users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('admin.users.toggle-status');
     Route::post('/users/{user}/assign-role', [UserController::class, 'assignRole'])->name('admin.users.assign-role');
-    Route::post('/users/{user}/send-welcome-email', [UserController::class, 'sendWelcomeEmail'])->name('admin.users.send-welcome-email');
+    Route::post('/users/{user}/impersonate', [UserController::class, 'impersonate'])->name('admin.users.impersonate');
+    Route::post('/users/stop-impersonating', [UserController::class, 'stopImpersonating'])->name('admin.users.stop-impersonating');
+    Route::post('/users/{id}/restore', [UserController::class, 'restore'])->name('admin.users.restore')->withTrashed();
+    Route::delete('/users/{id}/force-delete', [UserController::class, 'forceDelete'])->name('admin.users.force-delete')->withTrashed();
     
     // Beneficiaries Management
     Route::resource('beneficiaries', BeneficiaryController::class)->names('admin.beneficiaries');

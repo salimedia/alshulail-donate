@@ -14,7 +14,7 @@
                 </div>
                 <input type="text" 
                        class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                       placeholder="Search projects, donations, users..."
+                       placeholder="{{ __("Search projects, donations, users...") }}"
                        x-data="{ value: '' }"
                        x-model="value"
                        @input="debounce(() => { if(value.length > 2) { console.log('Searching for:', value); } }, 300)">
@@ -44,7 +44,7 @@
                      class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 z-50"
                      x-cloak>
                     <div class="p-4 border-b border-gray-100">
-                        <h3 class="text-sm font-semibold text-gray-900">Notifications</h3>
+                        <h3 class="text-sm font-semibold text-gray-900">{{ __("Notifications") }}</h3>
                     </div>
                     <div class="max-h-96 overflow-y-auto">
                         <!-- Notification items -->
@@ -52,9 +52,9 @@
                             <div class="flex items-start space-x-3">
                                 <div class="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
                                 <div class="flex-1 min-w-0">
-                                    <p class="text-sm text-gray-900 font-medium">New donation received</p>
-                                    <p class="text-xs text-gray-500 mt-1">$500 donated to Yemen School Project</p>
-                                    <p class="text-xs text-gray-400 mt-1">5 minutes ago</p>
+                                    <p class="text-sm text-gray-900 font-medium">{{ __("New donation received") }}</p>
+                                    <p class="text-xs text-gray-500 mt-1">{{ __("$500 donated to Yemen School Project") }}</p>
+                                    <p class="text-xs text-gray-400 mt-1">{{ __("5 minutes ago") }}</p>
                                 </div>
                             </div>
                         </a>
@@ -62,9 +62,9 @@
                             <div class="flex items-start space-x-3">
                                 <div class="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
                                 <div class="flex-1 min-w-0">
-                                    <p class="text-sm text-gray-900 font-medium">Project goal reached</p>
-                                    <p class="text-xs text-gray-500 mt-1">Orphan Sponsorship project completed</p>
-                                    <p class="text-xs text-gray-400 mt-1">2 hours ago</p>
+                                    <p class="text-sm text-gray-900 font-medium">{{ __("Project goal reached") }}</p>
+                                    <p class="text-xs text-gray-500 mt-1">{{ __("Orphan Sponsorship project completed") }}</p>
+                                    <p class="text-xs text-gray-400 mt-1">{{ __("2 hours ago") }}</p>
                                 </div>
                             </div>
                         </a>
@@ -72,16 +72,16 @@
                             <div class="flex items-start space-x-3">
                                 <div class="w-2 h-2 bg-yellow-500 rounded-full mt-2"></div>
                                 <div class="flex-1 min-w-0">
-                                    <p class="text-sm text-gray-900 font-medium">New user registered</p>
-                                    <p class="text-xs text-gray-500 mt-1">Ahmed Ali joined the platform</p>
-                                    <p class="text-xs text-gray-400 mt-1">1 day ago</p>
+                                    <p class="text-sm text-gray-900 font-medium">{{ __("New user registered") }}</p>
+                                    <p class="text-xs text-gray-500 mt-1">{{ __("Ahmed Ali joined the platform") }}</p>
+                                    <p class="text-xs text-gray-400 mt-1">{{ __("1 day ago") }}</p>
                                 </div>
                             </div>
                         </a>
                     </div>
                     <div class="p-2 border-t border-gray-100">
                         <a href="#" class="block text-center text-sm text-indigo-600 hover:text-indigo-800">
-                            View all notifications
+                            {{ __("View all notifications") }}
                         </a>
                     </div>
                 </div>
@@ -122,15 +122,15 @@
                     <div class="py-1">
                         <a href="#" class="flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">
                             <i class="fas fa-user-circle mr-2"></i>
-                            Profile Settings
+                            {{ __("Profile Settings") }}
                         </a>
                         <a href="{{ route('admin.settings') }}" class="flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">
                             <i class="fas fa-cog mr-2"></i>
-                            System Settings
+                            {{ __("System Settings") }}
                         </a>
                         <a href="#" class="flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">
                             <i class="fas fa-question-circle mr-2"></i>
-                            Help & Support
+                            {{ __("Help & Support") }}
                         </a>
                     </div>
                     <div class="border-t border-gray-100">
@@ -138,7 +138,7 @@
                             @csrf
                             <button type="submit" class="flex items-center w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50">
                                 <i class="fas fa-sign-out-alt mr-2"></i>
-                                Sign Out
+                                {{ __("Sign Out") }}
                             </button>
                         </form>
                     </div>

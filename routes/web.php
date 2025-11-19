@@ -20,3 +20,8 @@ Route::get('/projects/{slug}', [ProjectController::class, 'show'])->name('projec
 Route::post('/donate', [DonationController::class, 'store'])->name('donations.store');
 Route::get('/donations/success', [DonationController::class, 'success'])->name('donations.success');
 Route::get('/donations/failed', [DonationController::class, 'failed'])->name('donations.failed');
+
+// Login redirect to admin
+Route::get('/login', function () {
+    return redirect('/admin/login');
+})->name('login');

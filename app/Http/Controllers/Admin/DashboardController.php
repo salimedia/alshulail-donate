@@ -22,11 +22,11 @@ class DashboardController extends Controller
         $topProjects = $this->getTopProjects();
         $recentUsers = $this->getRecentUsers();
         $monthlyDonations = $this->getMonthlyDonations();
-        
+
         return view('admin.dashboard.index', compact(
-            'stats', 
-            'recentDonations', 
-            'topProjects', 
+            'stats',
+            'recentDonations',
+            'topProjects',
             'recentUsers',
             'monthlyDonations'
         ));
@@ -91,7 +91,7 @@ class DashboardController extends Controller
             'today_donations' => Donation::whereDate('created_at', $today)->sum('amount'),
             'this_month_donations' => Donation::where('created_at', '>=', $thisMonth)->sum('amount'),
             'last_month_donations' => Donation::whereBetween('created_at', [$lastMonth, $thisMonth])->sum('amount'),
-            'total_donors' => User::whereHas('donations')->count(),
+            'total_donors' => User::whereHas('donations')->count() ?? 0,
             'new_donors_today' => User::whereHas('donations', function($q) use ($today) {
                 $q->whereDate('created_at', $today);
             })->count(),
@@ -146,7 +146,7 @@ class DashboardController extends Controller
     {
         $totalProjects = Project::count();
         $completedProjects = Project::where('status', 'completed')->count();
-        
+
         return $totalProjects > 0 ? round(($completedProjects / $totalProjects) * 100, 2) : 0;
     }
 }

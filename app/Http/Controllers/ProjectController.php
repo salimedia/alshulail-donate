@@ -35,6 +35,11 @@ class ProjectController extends Controller
             ->orderBy('display_order')
             ->paginate(12);
 
+        // Load media for each project
+        $projects->getCollection()->each(function($project) {
+            $project->projectImages = $project->getMedia('images');
+        });
+
         $categories = Category::where('type', 'project')
             ->where('is_active', true)
             ->orderBy('display_order')
@@ -50,12 +55,20 @@ class ProjectController extends Controller
             ->where('status', 'active')
             ->firstOrFail();
 
-        // Get related projects
+        // Load media for the project
+        $project->projectImages = $project->getMedia('images');
+
+        // Get related projects with media
         $relatedProjects = Project::where('category_id', $project->category_id)
             ->where('id', '!=', $project->id)
             ->where('status', 'active')
             ->limit(3)
             ->get();
+
+        // Load media for related projects
+        $relatedProjects->each(function($relatedProject) {
+            $relatedProject->projectImages = $relatedProject->getMedia('images');
+        });
 
         return view('projects.show', compact('project', 'relatedProjects'));
     }

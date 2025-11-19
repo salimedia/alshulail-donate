@@ -13,7 +13,10 @@ class ProjectController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Project::with(['category', 'media']);
+        // Include trashed projects if requested
+        $query = $request->boolean('show_deleted') ?
+            Project::withTrashed()->with(['category', 'media']) :
+            Project::with(['category', 'media']);
 
         // Search functionality
         if ($request->filled('search')) {
@@ -57,9 +60,12 @@ class ProjectController extends Controller
         return view('admin.projects.index', compact('projects', 'categories'));
     }
 
-    public function show(Project $project)
+    public function show($id)
     {
-        $project->load(['category', 'donations.user', 'beneficiaries', 'media']);
+        $project = Project::withTrashed()->with(['category', 'donations.user', 'beneficiaries'])->findOrFail($id);
+        
+        // Load media explicitly
+        $projectImages = $project->getMedia('images');
         
         $stats = [
             'total_donations' => $project->donations->count(),
@@ -69,7 +75,7 @@ class ProjectController extends Controller
             'days_left' => $project->days_left,
         ];
 
-        return view('admin.projects.show', compact('project', 'stats'));
+        return view('admin.projects.show', compact('project', 'stats', 'projectImages'));
     }
 
     public function create()
@@ -106,7 +112,7 @@ class ProjectController extends Controller
         // Generate slug if not provided
         if (empty($validated['slug'])) {
             $validated['slug'] = Str::slug($validated['title_en']);
-            
+
             // Ensure uniqueness
             $originalSlug = $validated['slug'];
             $counter = 1;
@@ -121,25 +127,25 @@ class ProjectController extends Controller
         // Handle image uploads
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
-                $project->addMediaFromRequest('images')
-                    ->each(function ($fileAdder) {
-                        $fileAdder->toMediaCollection('images');
-                    });
+                $project->addMedia($image)->toMediaCollection('images');
             }
         }
 
-        return redirect()->route('admin.projects.show', $project)
+        return redirect()->route('admin.projects.show', $project->id)
             ->with('success', 'Project created successfully!');
     }
 
-    public function edit(Project $project)
+    public function edit($id)
     {
+        $project = Project::withTrashed()->findOrFail($id);
         $categories = Category::where('is_active', true)->get();
         return view('admin.projects.edit', compact('project', 'categories'));
     }
 
-    public function update(Request $request, Project $project)
+    public function update(Request $request, $id)
     {
+        $project = Project::withTrashed()->findOrFail($id);
+
         $validated = $request->validate([
             'title_ar' => 'required|string|max:255',
             'title_en' => 'required|string|max:255',
@@ -165,9 +171,16 @@ class ProjectController extends Controller
             'display_order' => 'integer|min:0',
         ]);
 
+        // Handle image uploads
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                $project->addMedia($image)->toMediaCollection('images');
+            }
+        }
+
         $project->update($validated);
 
-        return redirect()->route('admin.projects.show', $project)
+        return redirect()->route('admin.projects.show', $project->id)
             ->with('success', 'Project updated successfully!');
     }
 
@@ -212,11 +225,8 @@ class ProjectController extends Controller
         $uploadedCount = 0;
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
-                $project->addMediaFromRequest('images')
-                    ->each(function ($fileAdder) use (&$uploadedCount) {
-                        $fileAdder->toMediaCollection('images');
-                        $uploadedCount++;
-                    });
+                $project->addMedia($image)->toMediaCollection('images');
+                $uploadedCount++;
             }
         }
 
@@ -226,10 +236,10 @@ class ProjectController extends Controller
         ]);
     }
 
-    public function deleteImage(Project $project, $mediaId)
+    public function deleteMedia(Project $project, $mediaId)
     {
         $media = $project->getMedia('images')->find($mediaId);
-        
+
         if ($media) {
             $media->delete();
             return response()->json([
@@ -242,5 +252,30 @@ class ProjectController extends Controller
             'success' => false,
             'message' => 'Image not found!',
         ], 404);
+    }
+
+    public function restore($id)
+    {
+        $project = Project::withTrashed()->findOrFail($id);
+        $project->restore();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Project restored successfully!',
+        ]);
+    }
+
+    public function forceDelete($id)
+    {
+        $project = Project::withTrashed()->findOrFail($id);
+
+        // Delete all associated media files
+        $project->clearMediaCollection('images');
+
+        // Force delete the project
+        $project->forceDelete();
+
+        return redirect()->route('admin.projects.index')
+            ->with('success', 'Project permanently deleted!');
     }
 }

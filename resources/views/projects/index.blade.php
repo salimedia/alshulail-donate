@@ -90,11 +90,19 @@
                 <div class="project-card">
                     <!-- Project Image -->
                     <div class="position-relative">
-                        <img
-                            src="https://via.placeholder.com/400x200/006341/ffffff?text={{ urlencode(app()->getLocale() == 'ar' ? 'مشروع خيري' : 'Charity Project') }}"
-                            alt="{{ app()->getLocale() == 'ar' ? $project->title_ar : $project->title_en }}"
-                            class="project-card-image"
-                        >
+                        @if(count($project->projectImages) > 0)
+                            <img
+                                src="{{ $project->projectImages->first()->getUrl() }}"
+                                alt="{{ app()->getLocale() == 'ar' ? $project->title_ar : $project->title_en }}"
+                                class="project-card-image"
+                            >
+                        @else
+                            <img
+                                src="https://via.placeholder.com/400x200/006341/ffffff?text={{ urlencode(app()->getLocale() == 'ar' ? 'مشروع خيري' : 'Charity Project') }}"
+                                alt="{{ app()->getLocale() == 'ar' ? $project->title_ar : $project->title_en }}"
+                                class="project-card-image"
+                            >
+                        @endif
                         <div class="project-card-badge">
                             {{ app()->getLocale() == 'ar' ? $project->category->name_ar : $project->category->name_en }}
                         </div>

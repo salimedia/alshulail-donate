@@ -1,0 +1,77 @@
+{
+  "name": "Donation Platform",
+  "description": "A Laravel-based donation platform with multi-language support (Arabic/English), admin dashboard, and comprehensive project management system",
+  "version": "1.0.0",
+  "framework": "Laravel 12",
+  "languages": ["PHP", "JavaScript", "HTML", "CSS"],
+    "include": [
+    "app/",
+    "routes/",
+    "resources/js/",
+    "resources/views/",
+    "database/migrations/"
+  ],
+  "features": [
+    "Multi-language support (Arabic/English)",
+    "Admin dashboard with statistics and analytics",
+    "Project management with CRUD operations",
+    "Donation tracking and management",
+    "User management with role-based permissions",
+    "Soft delete functionality",
+    "Media management for project images",
+    "Responsive design with Tailwind CSS",
+    "Real-time statistics and charts",
+    "Advanced filtering and search capabilities"
+  ],
+  "tech_stack": {
+    "backend": "Laravel 12",
+    "frontend": "Blade Templates, Tailwind CSS, JavaScript",
+    "database": "MySQL/PostgreSQL",
+    "authentication": "Laravel Auth with Spatie Permissions",
+    "media": "Spatie Media Library",
+    "styling": "Tailwind CSS with custom animations"
+  },
+  "key_models": [
+    "User",
+    "Project",
+    "Donation",
+    "Category",
+    "Beneficiary",
+    "Payment"
+  ],
+  "admin_features": [
+    "Dashboard with real-time statistics",
+    "Project management (create, read, update, delete, restore)",
+    "Donation tracking and approval",
+    "User management with permissions",
+    "Category management",
+    "Media library for project images",
+    "Audit logging",
+    "Export functionality",
+    "Multi-language content management"
+  ],
+  "development_notes": {
+    "default_language": "Arabic (ar)",
+    "fallback_language": "English (en)",
+    "translation_system": "JSON-based with __() helper function",
+    "soft_deletes": "Implemented for projects with restore functionality",
+    "permissions": "Role-based using Spatie Permission package",
+    "file_structure": {
+      "controllers": "app/Http/Controllers/Admin/",
+      "models": "app/Models/",
+      "views": "resources/views/admin/",
+      "translations": "lang/",
+      "routes": "routes/admin.php"
+    }
+  },
+  "recent_updates": [
+    "Created comprehensive admin projects CRUD system",
+    "Implemented soft delete functionality with restore capabilities",
+    "Added Arabic/English bilingual support throughout admin interface",
+    "Built modern, responsive UI/UX with Tailwind CSS",
+    "Added media management for project images",
+    "Implemented advanced filtering and search capabilities",
+    "Added real-time statistics and analytics dashboard",
+    "always use mx-2 for icons to make space between icon and text for RTL/LTR compatibility"
+  ]
+}

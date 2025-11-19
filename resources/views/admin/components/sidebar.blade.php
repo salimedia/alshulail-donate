@@ -7,8 +7,8 @@
                 <i class="fas fa-heart text-white text-lg"></i>
             </div>
             <div>
-                <h2 class="text-lg font-bold">Donation Admin</h2>
-                <p class="text-xs text-purple-200">Control Panel</p>
+                <h2 class="text-lg font-bold">{{ __("Donation Admin") }}</h2>
+                <p class="text-xs text-purple-200">{{ __("Control Panel") }}</p>
             </div>
         </div>
     </div>
@@ -19,7 +19,7 @@
         <a href="{{ route('admin.dashboard') }}" 
            class="flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 {{ request()->routeIs('admin.dashboard*') ? 'bg-white bg-opacity-20 text-white shadow-lg' : 'text-purple-200 hover:bg-white hover:bg-opacity-10 hover:text-white' }}">
             <i class="fas fa-tachometer-alt mr-3 text-lg"></i>
-            <span>Dashboard</span>
+            <span>{{ __("Dashboard") }}</span>
         </a>
 
         <!-- Projects -->
@@ -28,18 +28,18 @@
                     class="w-full flex items-center justify-between px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 {{ request()->routeIs('admin.projects*') ? 'bg-white bg-opacity-20 text-white' : 'text-purple-200 hover:bg-white hover:bg-opacity-10 hover:text-white' }}">
                 <div class="flex items-center">
                     <i class="fas fa-project-diagram mr-3 text-lg"></i>
-                    <span>Projects</span>
+                    <span>{{ __("Projects") }}</span>
                 </div>
                 <i class="fas fa-chevron-down transform transition-transform" :class="open ? 'rotate-180' : ''"></i>
             </button>
             <div x-show="open" x-collapse class="mt-2 ml-4 space-y-1">
                 <a href="{{ route('admin.projects.index') }}" 
                    class="flex items-center px-4 py-2 text-sm rounded-lg {{ request()->routeIs('admin.projects.index') ? 'bg-white bg-opacity-10 text-white' : 'text-purple-200 hover:bg-white hover:bg-opacity-5 hover:text-white' }}">
-                    <i class="fas fa-list mr-2"></i> All Projects
+                    <i class="fas fa-list mr-2"></i> {{ __("All Projects") }}
                 </a>
                 <a href="{{ route('admin.projects.create') }}" 
                    class="flex items-center px-4 py-2 text-sm rounded-lg {{ request()->routeIs('admin.projects.create') ? 'bg-white bg-opacity-10 text-white' : 'text-purple-200 hover:bg-white hover:bg-opacity-5 hover:text-white' }}">
-                    <i class="fas fa-plus mr-2"></i> Create Project
+                    <i class="fas fa-plus mr-2"></i> {{ __("Create Project") }}
                 </a>
             </div>
         </div>
@@ -50,18 +50,18 @@
                     class="w-full flex items-center justify-between px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 {{ request()->routeIs('admin.donations*') ? 'bg-white bg-opacity-20 text-white' : 'text-purple-200 hover:bg-white hover:bg-opacity-10 hover:text-white' }}">
                 <div class="flex items-center">
                     <i class="fas fa-donate mr-3 text-lg"></i>
-                    <span>Donations</span>
+                    <span>{{ __("Donations") }}</span>
                 </div>
                 <i class="fas fa-chevron-down transform transition-transform" :class="open ? 'rotate-180' : ''"></i>
             </button>
             <div x-show="open" x-collapse class="mt-2 ml-4 space-y-1">
                 <a href="{{ route('admin.donations.index') }}" 
                    class="flex items-center px-4 py-2 text-sm rounded-lg text-purple-200 hover:bg-white hover:bg-opacity-5 hover:text-white">
-                    <i class="fas fa-list mr-2"></i> All Donations
+                    <i class="fas fa-list mr-2"></i> {{ __("All Donations") }}
                 </a>
                 <a href="{{ route('admin.donations.index', ['status' => 'pending']) }}" 
                    class="flex items-center px-4 py-2 text-sm rounded-lg text-purple-200 hover:bg-white hover:bg-opacity-5 hover:text-white">
-                    <i class="fas fa-clock mr-2"></i> Pending
+                    <i class="fas fa-clock mr-2"></i> {{ __("Pending") }}
                 </a>
             </div>
         </div>
@@ -72,18 +72,18 @@
                     class="w-full flex items-center justify-between px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 {{ request()->routeIs('admin.users*') ? 'bg-white bg-opacity-20 text-white' : 'text-purple-200 hover:bg-white hover:bg-opacity-10 hover:text-white' }}">
                 <div class="flex items-center">
                     <i class="fas fa-users mr-3 text-lg"></i>
-                    <span>Users</span>
+                    <span>{{ __("Users") }}</span>
                 </div>
                 <i class="fas fa-chevron-down transform transition-transform" :class="open ? 'rotate-180' : ''"></i>
             </button>
             <div x-show="open" x-collapse class="mt-2 ml-4 space-y-1">
                 <a href="{{ route('admin.users.index') }}" 
                    class="flex items-center px-4 py-2 text-sm rounded-lg text-purple-200 hover:bg-white hover:bg-opacity-5 hover:text-white">
-                    <i class="fas fa-list mr-2"></i> All Users
+                    <i class="fas fa-list mr-2"></i> {{ __("All Users") }}
                 </a>
                 <a href="{{ route('admin.users.create') }}" 
                    class="flex items-center px-4 py-2 text-sm rounded-lg text-purple-200 hover:bg-white hover:bg-opacity-5 hover:text-white">
-                    <i class="fas fa-user-plus mr-2"></i> Create User
+                    <i class="fas fa-user-plus mr-2"></i> {{ __("Create User") }}
                 </a>
             </div>
         </div>
@@ -92,7 +92,7 @@
         <a href="{{ route('admin.categories.index') }}" 
            class="flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 {{ request()->routeIs('admin.categories*') ? 'bg-white bg-opacity-20 text-white shadow-lg' : 'text-purple-200 hover:bg-white hover:bg-opacity-10 hover:text-white' }}">
             <i class="fas fa-tags mr-3 text-lg"></i>
-            <span>Categories</span>
+            <span>{{ __("Categories") }}</span>
         </a>
 
         <!-- Separator -->
@@ -102,21 +102,21 @@
         <a href="{{ route('admin.statistics') }}" 
            class="flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 {{ request()->routeIs('admin.statistics*') ? 'bg-white bg-opacity-20 text-white shadow-lg' : 'text-purple-200 hover:bg-white hover:bg-opacity-10 hover:text-white' }}">
             <i class="fas fa-chart-bar mr-3 text-lg"></i>
-            <span>Statistics</span>
+            <span>{{ __("Statistics") }}</span>
         </a>
 
         <!-- Audit Logs -->
         <a href="{{ route('admin.audit-logs') }}" 
            class="flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 {{ request()->routeIs('admin.audit-logs*') ? 'bg-white bg-opacity-20 text-white shadow-lg' : 'text-purple-200 hover:bg-white hover:bg-opacity-10 hover:text-white' }}">
             <i class="fas fa-history mr-3 text-lg"></i>
-            <span>Audit Logs</span>
+            <span>{{ __("Audit Logs") }}</span>
         </a>
 
         <!-- Settings -->
         <a href="{{ route('admin.settings') }}" 
            class="flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 {{ request()->routeIs('admin.settings*') ? 'bg-white bg-opacity-20 text-white shadow-lg' : 'text-purple-200 hover:bg-white hover:bg-opacity-10 hover:text-white' }}">
             <i class="fas fa-cog mr-3 text-lg"></i>
-            <span>Settings</span>
+            <span>{{ __("Settings") }}</span>
         </a>
     </nav>
 
