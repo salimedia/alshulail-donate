@@ -5,6 +5,8 @@ use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DonationController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\BeneficiaryController;
 use App\Http\Controllers\Admin\PaymentController;
@@ -64,6 +66,20 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/users/stop-impersonating', [UserController::class, 'stopImpersonating'])->name('admin.users.stop-impersonating');
     Route::post('/users/{id}/restore', [UserController::class, 'restore'])->name('admin.users.restore')->withTrashed();
     Route::delete('/users/{id}/force-delete', [UserController::class, 'forceDelete'])->name('admin.users.force-delete')->withTrashed();
+    Route::post('/users/bulk/activate', [UserController::class, 'bulkActivate'])->name('admin.users.bulk.activate');
+    Route::post('/users/bulk/deactivate', [UserController::class, 'bulkDeactivate'])->name('admin.users.bulk.deactivate');
+    Route::post('/users/bulk/delete', [UserController::class, 'bulkDelete'])->name('admin.users.bulk.delete');
+    
+    // Roles Management
+    Route::resource('roles', RoleController::class)->names('admin.roles');
+    Route::post('/roles/{role}/assign-user', [RoleController::class, 'assignToUser'])->name('admin.roles.assign-user');
+    Route::post('/roles/{role}/remove-user', [RoleController::class, 'removeFromUser'])->name('admin.roles.remove-user');
+    
+    // Permissions Management  
+    Route::resource('permissions', PermissionController::class)->only(['index', 'show'])->names('admin.permissions');
+    Route::post('/permissions/sync-role', [PermissionController::class, 'syncWithRole'])->name('admin.permissions.sync-role');
+    Route::post('/permissions/assign-user', [PermissionController::class, 'assignToUser'])->name('admin.permissions.assign-user');
+    Route::post('/permissions/remove-user', [PermissionController::class, 'removeFromUser'])->name('admin.permissions.remove-user');
     
     // Beneficiaries Management
     Route::resource('beneficiaries', BeneficiaryController::class)->names('admin.beneficiaries');

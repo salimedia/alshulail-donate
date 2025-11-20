@@ -54,6 +54,18 @@
     "default_language": "Arabic (ar)",
     "fallback_language": "English (en)",
     "translation_system": "JSON-based with __() helper function",
+    "localization_requirements": {
+      "respect_ar_json_en_json": "Always use ar.json and en.json content according to current user locale",
+      "translation_keys": "Use __() helper function with proper translation keys",
+      "locale_switching": "Respect user's chosen locale throughout the application",
+      "rtl_ltr_support": "Full support for Arabic (RTL) and English (LTR) layouts"
+    },
+    "ui_spacing_guidelines": {
+      "icon_text_spacing": "Always use minimum mx-1 spacing between icons and text",
+      "recommended_spacing": "Use mr-4/ml-4 for better visual hierarchy",
+      "rtl_compatibility": "Ensure proper spacing works in both RTL and LTR layouts",
+      "responsive_spacing": "Maintain consistent spacing across all screen sizes"
+    },
     "soft_deletes": "Implemented for projects with restore functionality",
     "permissions": "Role-based using Spatie Permission package",
     "file_structure": {
@@ -64,14 +76,29 @@
       "routes": "routes/admin.php"
     }
   },
+  "design_system": {
+    "admin_panel": "Tailwind CSS with modern UI/UX design patterns",
+    "components": "Custom Tailwind components with gradients and animations",
+    "color_scheme": "Modern gradients (blue, purple, emerald, amber, red)",
+    "icons": "Font Awesome with proper spacing (mr-4/mx-2 for RTL/LTR)",
+    "layout": "Card-based grid layouts with hover effects",
+    "animations": "Smooth transitions, hover scales, and loading states",
+    "responsiveness": "Mobile-first responsive design"
+  },
   "recent_updates": [
     "Created comprehensive admin projects CRUD system",
-    "Implemented soft delete functionality with restore capabilities",
+    "Implemented soft delete functionality with restore capabilities", 
     "Added Arabic/English bilingual support throughout admin interface",
     "Built modern, responsive UI/UX with Tailwind CSS",
+    "Added comprehensive role and permission management system",
+    "Redesigned admin roles index with beautiful card-based layout",
+    "Implemented gradient statistics cards with animations",
     "Added media management for project images",
     "Implemented advanced filtering and search capabilities",
     "Added real-time statistics and analytics dashboard",
-    "always use mx-2 for icons to make space between icon and text for RTL/LTR compatibility"
+    "Admin Control Panel uses Tailwind CSS for all UI components",
+    "Always respect ar.json/en.json content based on user's locale",
+    "Use minimum mx-1 spacing between icons and text, prefer mr-4/ml-4 for better visual hierarchy",
+    "Ensure RTL/LTR compatibility with proper icon-text spacing guidelines"
   ]
 }

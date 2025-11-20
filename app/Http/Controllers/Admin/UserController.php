@@ -15,16 +15,14 @@ class UserController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware(function ($request, $next) {
-            if (!auth()->user()->hasRole('admin')) {
-                abort(403, 'Unauthorized');
-            }
-            return $next($request);
-        });
     }
 
     public function index(Request $request)
     {
+        if (!auth()->user()->can('users.view')) {
+            abort(403, 'Unauthorized');
+        }
+        
         $query = User::with('roles');
 
         // Search functionality
@@ -61,12 +59,20 @@ class UserController extends Controller
 
     public function create()
     {
+        if (!auth()->user()->can('users.create')) {
+            abort(403, 'Unauthorized');
+        }
+        
         $roles = Role::all();
         return view('admin.users.create', compact('roles'));
     }
 
     public function store(Request $request)
     {
+        if (!auth()->user()->can('users.create')) {
+            abort(403, 'Unauthorized');
+        }
+        
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
@@ -111,6 +117,10 @@ class UserController extends Controller
 
     public function show(User $user)
     {
+        if (!auth()->user()->can('users.view')) {
+            abort(403, 'Unauthorized');
+        }
+        
         $user->load('roles', 'permissions');
         $user->avatar = $user->getFirstMediaUrl('avatars');
         
@@ -127,6 +137,10 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
+        if (!auth()->user()->can('users.edit')) {
+            abort(403, 'Unauthorized');
+        }
+        
         $roles = Role::all();
         $user->avatar = $user->getFirstMediaUrl('avatars');
         return view('admin.users.edit', compact('user', 'roles'));
@@ -134,6 +148,10 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
+        if (!auth()->user()->can('users.edit')) {
+            abort(403, 'Unauthorized');
+        }
+        
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->id],
@@ -196,6 +214,10 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
+        if (!auth()->user()->can('users.delete')) {
+            abort(403, 'Unauthorized');
+        }
+        
         // Prevent deletion of the last admin
         $adminUsers = User::role('admin')->count();
         if ($user->hasRole('admin') && $adminUsers <= 1) {
@@ -297,6 +319,99 @@ class UserController extends Controller
         return response()->json([
             'success' => true,
             'message' => __('messages.role_assigned_successfully'),
+        ]);
+    }
+
+    public function bulkActivate(Request $request)
+    {
+        $request->validate([
+            'user_ids' => 'required|array',
+            'user_ids.*' => 'exists:users,id'
+        ]);
+
+        $users = User::withTrashed()->whereIn('id', $request->user_ids)->get();
+        
+        foreach ($users as $user) {
+            if ($user->trashed()) {
+                $user->restore();
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => __('messages.users_activated_successfully'),
+        ]);
+    }
+
+    public function bulkDeactivate(Request $request)
+    {
+        $request->validate([
+            'user_ids' => 'required|array',
+            'user_ids.*' => 'exists:users,id'
+        ]);
+
+        $users = User::whereIn('id', $request->user_ids)->get();
+        
+        // Prevent deactivation of the last admin
+        $adminUserIds = User::role('admin')->whereNotIn('id', $request->user_ids)->pluck('id');
+        if ($adminUserIds->isEmpty()) {
+            $hasAdmin = $users->filter(function ($user) {
+                return $user->hasRole('admin');
+            })->isNotEmpty();
+            
+            if ($hasAdmin) {
+                return response()->json([
+                    'success' => false,
+                    'message' => __('messages.cannot_deactivate_last_admin'),
+                ]);
+            }
+        }
+        
+        foreach ($users as $user) {
+            if (!$user->hasRole('admin') || User::role('admin')->count() > 1) {
+                $user->delete();
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => __('messages.users_deactivated_successfully'),
+        ]);
+    }
+
+    public function bulkDelete(Request $request)
+    {
+        $request->validate([
+            'user_ids' => 'required|array',
+            'user_ids.*' => 'exists:users,id'
+        ]);
+
+        $users = User::whereIn('id', $request->user_ids)->get();
+        
+        // Prevent deletion of the last admin
+        $adminUserIds = User::role('admin')->whereNotIn('id', $request->user_ids)->pluck('id');
+        if ($adminUserIds->isEmpty()) {
+            $hasAdmin = $users->filter(function ($user) {
+                return $user->hasRole('admin');
+            })->isNotEmpty();
+            
+            if ($hasAdmin) {
+                return response()->json([
+                    'success' => false,
+                    'message' => __('messages.cannot_delete_last_admin'),
+                ]);
+            }
+        }
+        
+        foreach ($users as $user) {
+            if (!$user->hasRole('admin') || User::role('admin')->count() > 1) {
+                $user->delete();
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => __('messages.users_deleted_successfully'),
         ]);
     }
 }

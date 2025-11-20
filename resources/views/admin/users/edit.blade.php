@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', __('messages.add_new_user'))
+@section('title', __('edit_user'))
 
 @section('content')
 <div class="min-h-screen bg-gray-50 px-4 sm:px-6 lg:px-8">
@@ -29,15 +29,20 @@
                             <li>
                                 <div class="flex items-center">
                                     <i class="fas fa-chevron-right text-gray-400 mx-2"></i>
-                                    <span class="text-gray-800 font-medium">{{ __('add_new_user') }}</span>
+                                    <span class="text-gray-800 font-medium">{{ __('edit_user') }}</span>
                                 </div>
                             </li>
                         </ol>
                     </nav>
-                    <h1 class="text-3xl font-bold text-gray-900">{{ __('add_new_user') }}</h1>
-                    <p class="text-gray-600 mt-1">{{ __('create_a_new_user_account_with_proper_permissions') ?? 'Create a new user account with proper permissions' }}</p>
+                    <h1 class="text-3xl font-bold text-gray-900">{{ __('edit_user') }}: {{ $user->name }}</h1>
+                    <p class="text-gray-600 mt-1">{{ __('update_user_information_and_permissions') ?? 'Update user information and permissions' }}</p>
                 </div>
                 <div class="flex space-x-3">
+                    <a href="{{ route('admin.users.show', $user) }}" 
+                       class="inline-flex items-center px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
+                        <i class="fas fa-eye mr-4"></i>
+                        {{ __('view_user') }}
+                    </a>
                     <a href="{{ route('admin.users.index') }}" 
                        class="inline-flex items-center px-6 py-3 bg-gray-500 hover:bg-gray-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
                         <i class="fas fa-arrow-left mr-4"></i>
@@ -46,9 +51,11 @@
                 </div>
             </div>
 
-            <!-- User Creation Form -->
-            <form action="{{ route('admin.users.store') }}" method="POST" enctype="multipart/form-data" id="userCreateForm">
+            <!-- User Edit Form -->
+            <form action="{{ route('admin.users.update', $user) }}" method="POST" enctype="multipart/form-data" id="userEditForm">
                 @csrf
+                @method('PUT')
+                
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <!-- Left Column - Main Information -->
                     <div class="lg:col-span-2 space-y-8">
@@ -70,7 +77,7 @@
                                     <input type="text" 
                                            id="name" 
                                            name="name" 
-                                           value="{{ old('name') }}"
+                                           value="{{ old('name', $user->name) }}"
                                            placeholder="{{ __('full_name_placeholder') }}"
                                            class="block w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 @error('name') border-red-300 @enderror"
                                            required>
@@ -87,53 +94,11 @@
                                     <input type="email" 
                                            id="email" 
                                            name="email" 
-                                           value="{{ old('email') }}"
+                                           value="{{ old('email', $user->email) }}"
                                            placeholder="{{ __('email_placeholder') }}"
                                            class="block w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 @error('email') border-red-300 @enderror"
                                            required>
                                     @error('email')
-                                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                                    @enderror
-                                </div>
-
-                                <!-- Password -->
-                                <div>
-                                    <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">
-                                        {{ __('password') }} <span class="text-red-500">*</span>
-                                    </label>
-                                    <div class="relative">
-                                        <input type="password" 
-                                               id="password" 
-                                               name="password"
-                                               placeholder="{{ __('password_placeholder') }}"
-                                               class="block w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 @error('password') border-red-300 @enderror"
-                                               required>
-                                        <button type="button" onclick="togglePassword('password')" class="absolute inset-y-0 right-0 pr-3 flex items-center">
-                                            <i class="fas fa-eye text-gray-400 hover:text-gray-600"></i>
-                                        </button>
-                                    </div>
-                                    @error('password')
-                                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                                    @enderror
-                                </div>
-
-                                <!-- Confirm Password -->
-                                <div>
-                                    <label for="password_confirmation" class="block text-sm font-semibold text-gray-700 mb-2">
-                                        {{ __('confirm_password') }} <span class="text-red-500">*</span>
-                                    </label>
-                                    <div class="relative">
-                                        <input type="password" 
-                                               id="password_confirmation" 
-                                               name="password_confirmation"
-                                               placeholder="{{ __('confirm_password_placeholder') }}"
-                                               class="block w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 @error('password_confirmation') border-red-300 @enderror"
-                                               required>
-                                        <button type="button" onclick="togglePassword('password_confirmation')" class="absolute inset-y-0 right-0 pr-3 flex items-center">
-                                            <i class="fas fa-eye text-gray-400 hover:text-gray-600"></i>
-                                        </button>
-                                    </div>
-                                    @error('password_confirmation')
                                         <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                                     @enderror
                                 </div>
@@ -144,7 +109,7 @@
                                     <input type="tel" 
                                            id="phone" 
                                            name="phone" 
-                                           value="{{ old('phone') }}"
+                                           value="{{ old('phone', $user->phone) }}"
                                            placeholder="{{ __('phone_placeholder') }}"
                                            class="block w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 @error('phone') border-red-300 @enderror">
                                     @error('phone')
@@ -158,7 +123,7 @@
                                     <input type="date" 
                                            id="date_of_birth" 
                                            name="date_of_birth" 
-                                           value="{{ old('date_of_birth') }}"
+                                           value="{{ old('date_of_birth', $user->date_of_birth?->format('Y-m-d')) }}"
                                            class="block w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 @error('date_of_birth') border-red-300 @enderror">
                                     @error('date_of_birth')
                                         <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
@@ -184,8 +149,8 @@
                                             name="gender" 
                                             class="block w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 @error('gender') border-red-300 @enderror">
                                         <option value="">{{ __('select_gender') }}</option>
-                                        <option value="male" {{ old('gender') === 'male' ? 'selected' : '' }}>{{ __('male') }}</option>
-                                        <option value="female" {{ old('gender') === 'female' ? 'selected' : '' }}>{{ __('female') }}</option>
+                                        <option value="male" {{ old('gender', $user->gender) === 'male' ? 'selected' : '' }}>{{ __('male') }}</option>
+                                        <option value="female" {{ old('gender', $user->gender) === 'female' ? 'selected' : '' }}>{{ __('female') }}</option>
                                     </select>
                                     @error('gender')
                                         <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
@@ -198,7 +163,7 @@
                                     <input type="text" 
                                            id="country" 
                                            name="country" 
-                                           value="{{ old('country') }}"
+                                           value="{{ old('country', $user->country) }}"
                                            placeholder="{{ __('country_placeholder') }}"
                                            class="block w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 @error('country') border-red-300 @enderror">
                                     @error('country')
@@ -212,7 +177,7 @@
                                     <input type="text" 
                                            id="city" 
                                            name="city" 
-                                           value="{{ old('city') }}"
+                                           value="{{ old('city', $user->city) }}"
                                            placeholder="{{ __('city_placeholder') }}"
                                            class="block w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 @error('city') border-red-300 @enderror">
                                     @error('city')
@@ -227,12 +192,28 @@
                                             name="preferred_language" 
                                             class="block w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 @error('preferred_language') border-red-300 @enderror">
                                         <option value="">{{ __('select_language') }}</option>
-                                        <option value="en" {{ old('preferred_language') === 'en' ? 'selected' : '' }}>{{ __('english') }}</option>
-                                        <option value="ar" {{ old('preferred_language') === 'ar' ? 'selected' : '' }}>{{ __('arabic') }}</option>
+                                        <option value="en" {{ old('preferred_language', $user->preferred_language) === 'en' ? 'selected' : '' }}>{{ __('english') }}</option>
+                                        <option value="ar" {{ old('preferred_language', $user->preferred_language) === 'ar' ? 'selected' : '' }}>{{ __('arabic') }}</option>
                                     </select>
                                     @error('preferred_language')
                                         <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                                     @enderror
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Password Change Notice -->
+                        <div class="bg-blue-50 border border-blue-200 rounded-2xl p-6">
+                            <div class="flex items-start">
+                                <i class="fas fa-info-circle text-blue-500 mr-3 mt-1"></i>
+                                <div>
+                                    <h4 class="text-blue-900 font-semibold mb-2">{{ __('password_notice') ?? 'Password Change' }}</h4>
+                                    <p class="text-blue-700 text-sm mb-4">{{ __('password_change_notice') ?? 'To update the user\'s password, please use the dedicated password change form.' }}</p>
+                                    <a href="{{ route('admin.users.change-password', $user) }}" 
+                                       class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm hover:shadow-md transition-all duration-200">
+                                        <i class="fas fa-key mr-2"></i>
+                                        {{ __('change_password') }}
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -251,7 +232,13 @@
                             
                             <div class="text-center">
                                 <div id="avatar-preview" class="w-32 h-32 mx-auto mb-6 bg-gradient-to-r from-gray-100 to-gray-200 rounded-full flex items-center justify-center border-4 border-white shadow-lg overflow-hidden">
-                                    <i class="fas fa-user text-4xl text-gray-400"></i>
+                                    @if($user->getFirstMediaUrl('avatars'))
+                                        <img src="{{ $user->getFirstMediaUrl('avatars') }}" alt="{{ $user->name }}" class="w-full h-full object-cover rounded-full">
+                                    @else
+                                        <div class="w-full h-full bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                                            {{ strtoupper(substr($user->name, 0, 2)) }}
+                                        </div>
+                                    @endif
                                 </div>
                                 
                                 <div class="relative">
@@ -263,7 +250,7 @@
                                            class="hidden">
                                     <label for="avatar" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 cursor-pointer">
                                         <i class="fas fa-upload mr-2"></i>
-                                        {{ __('upload_avatar') }}
+                                        {{ __('change_avatar') ?? 'Change Avatar' }}
                                     </label>
                                     @error('avatar')
                                         <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
@@ -295,7 +282,7 @@
                                                    id="role_{{ $role->id }}" 
                                                    name="roles[]" 
                                                    value="{{ $role->name }}"
-                                                   {{ in_array($role->name, old('roles', [])) ? 'checked' : '' }}
+                                                   {{ in_array($role->name, old('roles', $user->roles->pluck('name')->toArray())) ? 'checked' : '' }}
                                                    class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 mr-3">
                                             <div class="flex items-center">
                                                 <span class="inline-flex px-3 py-1 text-xs font-medium rounded-full mr-3 {{ $role->name === 'admin' ? 'bg-red-100 text-red-800' : ($role->name === 'moderator' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-800') }}">
@@ -314,12 +301,73 @@
                                 <div class="mt-6 p-4 bg-blue-50 rounded-xl border border-blue-200">
                                     <div class="flex items-start">
                                         <i class="fas fa-info-circle text-blue-500 mr-3 mt-0.5"></i>
-                                        <p class="text-sm text-blue-700">{{ __('roles_info') }}</p>
+                                        <p class="text-sm text-blue-700">{{ __('roles_update_info') ?? 'Updating roles will immediately change the user\'s permissions and access levels.' }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Account Status -->
+                        <div class="bg-white rounded-2xl shadow-lg p-8">
+                            <div class="flex items-center mb-6">
+                                <div class="w-10 h-10 bg-gradient-to-r from-gray-500 to-gray-700 rounded-xl flex items-center justify-center mr-4">
+                                    <i class="fas fa-cog text-white"></i>
+                                </div>
+                                <h3 class="text-xl font-bold text-gray-900">{{ __('account_status') }}</h3>
+                            </div>
+                            
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center py-2">
+                                    <div>
+                                        <p class="font-medium text-gray-900">{{ __('account_status') }}</p>
+                                        <p class="text-sm text-gray-500">{{ __('current_status') ?? 'Current account status' }}</p>
+                                    </div>
+                                    <div>
+                                        @if($user->trashed())
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold bg-red-100 text-red-800 rounded-full">
+                                                {{ __('inactive') }}
+                                            </span>
+                                        @else
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold bg-green-100 text-green-800 rounded-full">
+                                                {{ __('active') }}
+                                            </span>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <div class="flex justify-between items-center py-2">
+                                    <div>
+                                        <p class="font-medium text-gray-900">{{ __('email_verification') }}</p>
+                                        <p class="text-sm text-gray-500">{{ __('email_verification_status') ?? 'Email verification status' }}</p>
+                                    </div>
+                                    <div>
+                                        @if($user->email_verified_at)
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold bg-green-100 text-green-800 rounded-full">
+                                                {{ __('verified') }}
+                                            </span>
+                                        @else
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold bg-orange-100 text-orange-800 rounded-full">
+                                                {{ __('unverified') }}
+                                            </span>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <div class="flex justify-between items-center py-2">
+                                    <div>
+                                        <p class="font-medium text-gray-900">{{ __('member_since') }}</p>
+                                        <p class="text-sm text-gray-500">{{ __('account_created_date') ?? 'Account creation date' }}</p>
+                                    </div>
+                                    <div>
+                                        <span class="inline-flex px-3 py-1 text-xs font-semibold bg-blue-100 text-blue-800 rounded-full">
+                                            {{ $user->created_at->format('M Y') }}
+                                        </span>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
                 
                 <!-- Form Actions -->
                 <div class="mt-8 bg-white rounded-2xl shadow-lg p-8">
@@ -329,15 +377,15 @@
                             <span class="text-sm text-gray-600">{{ __('required_fields') ?? 'Fields marked with * are required' }}</span>
                         </div>
                         <div class="flex space-x-4">
-                            <a href="{{ route('admin.users.index') }}" 
+                            <a href="{{ route('admin.users.show', $user) }}" 
                                class="inline-flex items-center px-6 py-3 bg-gray-500 hover:bg-gray-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200">
                                 <i class="fas fa-times mr-4"></i>
                                 {{ __('cancel') }}
                             </a>
                             <button type="submit" 
                                     class="inline-flex items-center px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
-                                <i class="fas fa-plus mr-4"></i>
-                                {{ __('create_user') }}
+                                <i class="fas fa-save mr-4"></i>
+                                {{ __('update_user') }}
                             </button>
                         </div>
                     </div>
@@ -351,7 +399,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Form validation
-    const form = document.getElementById('userCreateForm');
+    const form = document.getElementById('userEditForm');
     
     form.addEventListener('submit', function(e) {
         const roles = document.querySelectorAll('input[name="roles[]"]:checked');
@@ -360,30 +408,6 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             showMessage('{{ __("please_select_at_least_one_role") ?? "Please select at least one role" }}', 'error');
             return false;
-        }
-        
-        // Password confirmation validation
-        const password = document.getElementById('password').value;
-        const confirmPassword = document.getElementById('password_confirmation').value;
-        
-        if (password !== confirmPassword) {
-            e.preventDefault();
-            showMessage('{{ __("passwords_do_not_match") ?? "Passwords do not match" }}', 'error');
-            return false;
-        }
-    });
-
-    // Real-time password confirmation
-    document.getElementById('password_confirmation').addEventListener('input', function() {
-        const password = document.getElementById('password').value;
-        const confirmPassword = this.value;
-        
-        if (password && confirmPassword && password !== confirmPassword) {
-            this.classList.add('border-red-300');
-            this.classList.remove('border-gray-200');
-        } else {
-            this.classList.remove('border-red-300');
-            this.classList.add('border-gray-200');
         }
     });
 });
@@ -399,22 +423,6 @@ function previewAvatar(input) {
         };
         
         reader.readAsDataURL(input.files[0]);
-    }
-}
-
-// Toggle password visibility
-function togglePassword(fieldId) {
-    const field = document.getElementById(fieldId);
-    const icon = field.nextElementSibling.querySelector('i');
-    
-    if (field.type === 'password') {
-        field.type = 'text';
-        icon.classList.remove('fa-eye');
-        icon.classList.add('fa-eye-slash');
-    } else {
-        field.type = 'password';
-        icon.classList.remove('fa-eye-slash');
-        icon.classList.add('fa-eye');
     }
 }
 
